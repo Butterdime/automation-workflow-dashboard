@@ -7,23 +7,10 @@ jobs:
   repair-dashboard:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - run: npm install
+      - run: npm run build
+      - run: npm test
+      - uses: actions/setup-node@v3
         with:
-          token: ${{ secrets.GH_PAT }}
-
-      - name: Run environment setup
-        run: bash scripts/environment-setup.sh
-
-      - name: Update CI workflow
-        run: bash scripts/update-ci.sh
-
-      - name: Commit & push fixes
-        run: |
-          git config user.name "perplexity-bot"
-          git config user.email "noreply@perplexity.ai"
-          git add .
-          git commit -m "chore: automated CI/dashboard fixes"
-          git push origin main
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+          node-version: 16
