@@ -1,4 +1,7 @@
 name: Automation Workflow
+permissions:
+  contents: write
+  actions: read
 
 on:
   workflow_dispatch:
@@ -8,9 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-      - uses: actions/setup-node@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 16
+      - run: npm install
+        working-directory: automation-workflow-dashboard
+      - run: npm run build
+        working-directory: automation-workflow-dashboard
+      - run: npm test
+        working-directory: automation-workflow-dashboard
