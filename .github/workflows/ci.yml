@@ -20,13 +20,13 @@ jobs:
           node-version: 16
 
       - name: Install dependencies
-        working-directory: automation-workflow-dashboard/automation-workflow-dashboard
+        working-directory: automation-workflow-dashboard
         run: npm install
 
       - name: Run build
-        working-directory: automation-workflow-dashboard/automation-workflow-dashboard
+        working-directory: automation-workflow-dashboard
         run: npm run build
 
       - name: Run tests
-        working-directory: automation-workflow-dashboard/automation-workflow-dashboard
+        working-directory: automation-workflow-dashboard
         run: npm test
