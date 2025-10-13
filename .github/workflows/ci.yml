@@ -1,20 +1,32 @@
-     steps:
-       - name: Checkout repository
-         uses: actions/checkout@v3
+name: CI
 
-+      - name: Change to project directory
-+        run: cd automation-workflow-dashboard
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-       - name: Set up Node.js
-         uses: actions/setup-node@v3
-         with:
-           node-version: 16
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-       - name: Install dependencies
-         run: npm install
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-       - name: Run build
-         run: npm run build
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
 
-       - name: Run tests
-         run: npm test
+      - name: Install dependencies
+        working-directory: automation-workflow-dashboard/automation-workflow-dashboard
+        run: npm install
+
+      - name: Run build
+        working-directory: automation-workflow-dashboard/automation-workflow-dashboard
+        run: npm run build
+
+      - name: Run tests
+        working-directory: automation-workflow-dashboard/automation-workflow-dashboard
+        run: npm test
