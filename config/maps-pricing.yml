@@ -1,0 +1,10 @@
+googlemaps:
+  freetier_credits_per_month: 3250
+  free_calls:
+    essentials: 10000
+    pro: 5000
+    enterprise: 1000
+  unlimited_sdks:
+    - MapsEmbedAPI
+    - MapsSDKAndroid
+    - MapsSDKiOS
