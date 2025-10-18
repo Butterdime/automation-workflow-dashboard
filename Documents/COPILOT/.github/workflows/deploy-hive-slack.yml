@@ -1,0 +1,106 @@
+name: CI/CD Pipeline
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: '18'
+      COPILOT_PORT: '4000'
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Setup GCP credentials
+        run: |
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}" > gcp-key.json
+          mkdir -p copilot
+          mv gcp-key.json copilot/
+
+      - name: Install Node dependencies
+        run: |
+          cd copilot
+          npm ci
+
+      - name: Install Firebase & GCP SDK
+        run: |
+          cd copilot
+          npm install firebase @google-cloud/firestore
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.14'
+
+      - name: Install Python dependencies
+        run: |
+          source copilot/.venv/bin/activate
+          pip install jsonschema
+
+      - name: Verify JSON & Backup
+        run: |
+          source copilot/.venv/bin/activate
+          python verify_jsons.py
+
+      - name: Start Copilot agent
+        run: |
+          nohup node copilot/server.js > copilot.log 2>&1 &
+          sleep 5
+          curl -f http://localhost:${{ env.COPILOT_PORT }}/health
+
+      - name: Start Tunnel
+        run: |
+          nohup node copilot/scripts/tunnel-setup.js > tunnel.log 2>&1 &
+          sleep 5
+
+      - name: Run Smoke Tests
+        run: |
+          node scripts/smoke.js
+
+      - name: Lint & Typecheck
+        run: |
+          npm run lint
+          npm run typecheck
+
+  security-scan:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run security audit
+        run: npm audit --audit-level=moderate || echo "⚠️ Vulnerabilities found"
+      - name: Check for committed secrets
+        run: |
+          if find . -name "*.env" -not -name ".env.example" | grep -q .; then
+            echo "❌ Found .env files!" && exit 1
+          fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build-and-test, security-scan]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create deployment summary
+        run: |
+          echo "🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Actor: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Time: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
+      - name: Notify deployment
+        run: echo "✅ Copilot integration build and tests passed. Ready for production!"

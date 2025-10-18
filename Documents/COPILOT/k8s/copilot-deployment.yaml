@@ -1,0 +1,348 @@
+# Kubernetes Configuration for Copilot Log Sharing
+# Apply with: kubectl apply -f k8s/
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: perplexity-copilot
+  labels:
+    name: perplexity-copilot
+
+---
+# Persistent Volume for Copilot Logs
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: copilot-logs-pv
+  namespace: perplexity-copilot
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: copilot-logs
+  hostPath:
+    path: /var/perplexity/copilot-logs
+    type: DirectoryOrCreate
+
+---
+# Persistent Volume Claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: copilot-logs-pvc
+  namespace: perplexity-copilot
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: copilot-logs
+
+---
+# ConfigMap for Environment Variables
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: copilot-config
+  namespace: perplexity-copilot
+data:
+  LOG_DIR: "/app/logs"
+  COPILOT_PORT: "4000"
+  NODE_ENV: "production"
+  SHARED_COPILOT_LOGS: "/shared/copilot-logs"
+
+---
+# Secret for Sensitive Configuration
+apiVersion: v1
+kind: Secret
+metadata:
+  name: copilot-secrets
+  namespace: perplexity-copilot
+type: Opaque
+stringData:
+  COPILOT_API_KEY: "your_copilot_api_key_here"
+  OPENAI_API_KEY: "your_openai_api_key_here"
+  SLACK_SIGNING_SECRET: "your_slack_signing_secret_here"
+  SLACK_BOT_TOKEN: "your_slack_bot_token_here"
+  FIREBASE_API_KEY: "your_firebase_api_key_here"
+  GOOGLE_PROJECT_ID: "your_gcp_project_id_here"
+
+---
+# Copilot Agent Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: copilot-agent
+  namespace: perplexity-copilot
+  labels:
+    app: copilot-agent
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: copilot-agent
+  template:
+    metadata:
+      labels:
+        app: copilot-agent
+    spec:
+      containers:
+      - name: copilot-agent
+        image: perplexity/copilot-agent:latest
+        ports:
+        - containerPort: 4000
+        env:
+        - name: LOG_DIR
+          valueFrom:
+            configMapKeyRef:
+              name: copilot-config
+              key: LOG_DIR
+        - name: COPILOT_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: copilot-config
+              key: COPILOT_PORT
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: copilot-config
+              key: NODE_ENV
+        envFrom:
+        - secretRef:
+            name: copilot-secrets
+        volumeMounts:
+        - name: copilot-logs
+          mountPath: /app/logs
+        - name: gcp-credentials
+          mountPath: /app/gcp-key.json
+          subPath: gcp-key.json
+          readOnly: true
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 4000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 4000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: copilot-logs
+        persistentVolumeClaim:
+          claimName: copilot-logs-pvc
+      - name: gcp-credentials
+        secret:
+          secretName: copilot-secrets
+          items:
+          - key: GCP_SERVICE_ACCOUNT_JSON
+            path: gcp-key.json
+
+---
+# Copilot Agent Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: copilot-agent-service
+  namespace: perplexity-copilot
+  labels:
+    app: copilot-agent
+spec:
+  selector:
+    app: copilot-agent
+  ports:
+  - protocol: TCP
+    port: 4000
+    targetPort: 4000
+  type: ClusterIP
+
+---
+# Webhook Multiplexer Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-multiplexer
+  namespace: perplexity-copilot
+  labels:
+    app: webhook-multiplexer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: webhook-multiplexer
+  template:
+    metadata:
+      labels:
+        app: webhook-multiplexer
+    spec:
+      containers:
+      - name: webhook-multiplexer
+        image: perplexity/webhook-multiplexer:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: COPILOT_URL
+          value: "http://copilot-agent-service:4000"
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: copilot-config
+              key: NODE_ENV
+        envFrom:
+        - secretRef:
+            name: copilot-secrets
+        volumeMounts:
+        - name: copilot-logs
+          mountPath: /shared/copilot-logs
+          readOnly: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: copilot-logs
+        persistentVolumeClaim:
+          claimName: copilot-logs-pvc
+
+---
+# Webhook Multiplexer Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: webhook-multiplexer-service
+  namespace: perplexity-copilot
+  labels:
+    app: webhook-multiplexer
+spec:
+  selector:
+    app: webhook-multiplexer
+  ports:
+  - protocol: TCP
+    port: 3000
+    targetPort: 3000
+  type: LoadBalancer
+
+---
+# Example Perplexity Space Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perplexity-space-example
+  namespace: perplexity-copilot
+  labels:
+    app: perplexity-space
+    space: example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: perplexity-space
+      space: example
+  template:
+    metadata:
+      labels:
+        app: perplexity-space
+        space: example
+    spec:
+      containers:
+      - name: perplexity-space
+        image: perplexity/space-example:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: COPILOT_URL
+          value: "http://copilot-agent-service:4000"
+        - name: WEBHOOK_URL
+          value: "http://webhook-multiplexer-service:3000"
+        - name: SHARED_COPILOT_LOGS
+          valueFrom:
+            configMapKeyRef:
+              name: copilot-config
+              key: SHARED_COPILOT_LOGS
+        - name: SPACE_NAME
+          value: "example-space"
+        volumeMounts:
+        - name: copilot-logs
+          mountPath: /shared/copilot-logs
+          readOnly: true
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: copilot-logs
+        persistentVolumeClaim:
+          claimName: copilot-logs-pvc
+
+---
+# Ingress for External Access
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: perplexity-copilot-ingress
+  namespace: perplexity-copilot
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - copilot.your-domain.com
+    secretName: copilot-tls
+  rules:
+  - host: copilot.your-domain.com
+    http:
+      paths:
+      - path: /webhook
+        pathType: Prefix
+        backend:
+          service:
+            name: webhook-multiplexer-service
+            port:
+              number: 3000
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: copilot-agent-service
+            port:
+              number: 4000
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: webhook-multiplexer-service
+            port:
+              number: 3000

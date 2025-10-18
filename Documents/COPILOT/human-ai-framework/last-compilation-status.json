@@ -1,0 +1,17 @@
+{
+  "timestamp": "2025-10-18T10:02:28Z",
+  "spaceName": "001-HUMAN-AI-FRAMEWORK",
+  "compilation": {
+    "lastRun": "2025-10-18T10:02:28Z",
+    "status": "success",
+    "latestFolder": "weekly-20251018",
+    "filesCompiled":       12,
+    "humanUser": "puvansivanasan"
+  },
+  "security": {
+    "dataExclusive": true,
+    "noExternalSharing": true,
+    "accessRestriction": "HUMAN-AI-FRAMEWORK-ONLY"
+  },
+  "nextScheduled": "unknown"
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Copilot Config Schema",
+  "type": "object",
+  "required": ["COPILOT_API_KEY","COPILOT_PORT","TUNNEL_SUBDOMAIN","GOOGLE_PROJECT_ID","GOOGLE_APPLICATION_CREDENTIALS","FIREBASE_API_KEY"],
+  "properties": {
+    "COPILOT_API_KEY": { "type": "string", "minLength": 32 },
+    "COPILOT_PORT": { "type": "integer", "minimum": 1024, "maximum": 65535 },
+    "TUNNEL_SUBDOMAIN": { "type": "string", "minLength": 3 },
+    "GOOGLE_PROJECT_ID": { "type": "string" },
+    "GOOGLE_APPLICATION_CREDENTIALS": { "type": "string" },
+    "FIREBASE_API_KEY": { "type": "string" },
+    "FIREBASE_DATABASE_URL": { "type": "string", "format": "uri" }
+  }
+}

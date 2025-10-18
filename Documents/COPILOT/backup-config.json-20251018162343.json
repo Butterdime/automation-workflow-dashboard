@@ -1,0 +1,5 @@
+{
+  "COPILOT_API_KEY": "sk-test1234567890abcdef1234567890abcdef12345678",
+  "COPILOT_PORT": 4000,
+  "TUNNEL_SUBDOMAIN": "my-copilot-agent"
+}

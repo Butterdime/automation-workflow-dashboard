@@ -1,0 +1,10 @@
+{
+  // Absolute path to Homebrew-installed Node.js
+  "nodejs.execPath": "/opt/homebrew/bin/node",
+  // Prevent the debug console from auto-opening
+  "extensions.node.debug.internalConsoleOptions": "neverOpen",
+  // Allow Copilot plugin to spawn terminal processes
+  "copilot.runInTerminal.enable": true,
+  // Shell profile for integrated terminal
+  "terminal.integrated.shellArgs.osx": ["-l"]
+}

@@ -1,0 +1,61 @@
+{
+  "space": "TEST-SPACE",
+  "timestamp": "2025-10-18T10:16:50.187Z",
+  "summary": {
+    "total": 7,
+    "passed": 3,
+    "failed": 4,
+    "successRate": 42.857142857142854,
+    "totalDuration": 36
+  },
+  "results": [
+    {
+      "name": "Copilot Agent Health Check",
+      "status": "FAIL",
+      "duration": 25,
+      "error": "Unhealthy status: ok"
+    },
+    {
+      "name": "Copilot Processing Endpoint",
+      "status": "FAIL",
+      "duration": 2,
+      "error": "Invalid response format"
+    },
+    {
+      "name": "Space Information Endpoint",
+      "status": "FAIL",
+      "duration": 2,
+      "error": "Space endpoint failed: 404 Not Found"
+    },
+    {
+      "name": "Metrics Endpoint",
+      "status": "FAIL",
+      "duration": 1,
+      "error": "Metrics failed: 404 Not Found"
+    },
+    {
+      "name": "Webhook Multiplexer Health",
+      "status": "PASS",
+      "duration": 2,
+      "error": null
+    },
+    {
+      "name": "File System Permissions",
+      "status": "PASS",
+      "duration": 1,
+      "error": null
+    },
+    {
+      "name": "Environment Configuration",
+      "status": "PASS",
+      "duration": 0,
+      "error": null
+    }
+  ],
+  "environment": {
+    "copilotPort": "4000",
+    "webhookPort": 3000,
+    "tunnelUrl": "not-configured",
+    "nodeVersion": "v24.10.0"
+  }
+}

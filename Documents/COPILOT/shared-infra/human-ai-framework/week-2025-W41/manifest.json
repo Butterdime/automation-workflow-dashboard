@@ -1,0 +1,36 @@
+{
+  "week_id": "2025-W41",
+  "compilation_date": "2025-10-18T18:17:02.689743",
+  "framework_space": "HUMAN-AI-FRAMEWORK",
+  "security_hash": "034043a8f8830738",
+  "data_sources": {
+    "copilot_logs": {
+      "files_count": 0,
+      "total_size": 0,
+      "files": []
+    },
+    "conversation_data": {
+      "files_count": 0,
+      "total_size": 0,
+      "files": []
+    },
+    "framework_configs": {
+      "files_count": 0,
+      "total_size": 0,
+      "files": []
+    },
+    "exclusive_content": {
+      "files_count": 1,
+      "total_size": 20480,
+      "files": [
+        {
+          "original_path": "human-ai-framework/compilations.db",
+          "compiled_path": "exclusive_content/compilations.db",
+          "size": 20480,
+          "hash": "911e654e0810fcdb"
+        }
+      ]
+    }
+  },
+  "exclusivity_verified": true
+}

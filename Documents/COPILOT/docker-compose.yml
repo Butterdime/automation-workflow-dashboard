@@ -1,0 +1,128 @@
+version: '3.8'
+
+services:
+  # Copilot Agent Service
+  copilot-agent:
+    build:
+      context: ./copilot
+      dockerfile: Dockerfile
+    container_name: copilot-agent
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - LOG_DIR=/app/logs
+      - COPILOT_PORT=4000
+    env_file:
+      - ./copilot/.env
+    volumes:
+      # Mount host log directory to container
+      - /var/perplexity/copilot-logs:/app/logs
+      # Mount GCP credentials if using Google Cloud
+      - ./copilot/gcp-key.json:/app/gcp-key.json:ro
+    restart: unless-stopped
+    networks:
+      - perplexity-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Webhook Multiplexer Service
+  webhook-multiplexer:
+    build:
+      context: .
+      dockerfile: Dockerfile.webhook
+    container_name: webhook-multiplexer
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - COPILOT_URL=http://copilot-agent:4000
+    env_file:
+      - ./.env
+    volumes:
+      # Read-only access to Copilot logs for monitoring
+      - /var/perplexity/copilot-logs:/shared/copilot-logs:ro
+    depends_on:
+      copilot-agent:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - perplexity-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Example Perplexity Space Service
+  perplexity-space-example:
+    build:
+      context: ./perplexity-spaces/example-space
+      dockerfile: Dockerfile
+    container_name: perplexity-space-example
+    ports:
+      - "8001:8000"
+    environment:
+      - COPILOT_URL=http://copilot-agent:4000
+      - WEBHOOK_URL=http://webhook-multiplexer:3000
+      - SHARED_COPILOT_LOGS=/shared/copilot-logs
+      - SPACE_NAME=example-space
+    volumes:
+      # Read-only access to shared Copilot logs
+      - /var/perplexity/copilot-logs:/shared/copilot-logs:ro
+    depends_on:
+      - copilot-agent
+      - webhook-multiplexer
+    restart: unless-stopped
+    networks:
+      - perplexity-network
+
+  # Nginx Load Balancer (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: perplexity-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      # Access logs for monitoring
+      - /var/perplexity/copilot-logs:/var/log/copilot-logs:ro
+    depends_on:
+      - copilot-agent
+      - webhook-multiplexer
+    restart: unless-stopped
+    networks:
+      - perplexity-network
+
+  # Log Monitoring Service (optional)
+  log-monitor:
+    image: grafana/promtail:2.9.0
+    container_name: copilot-log-monitor
+    volumes:
+      - /var/perplexity/copilot-logs:/var/log/copilot:ro
+      - ./monitoring/promtail-config.yml:/etc/promtail/config.yml:ro
+    command: -config.file=/etc/promtail/config.yml
+    restart: unless-stopped
+    networks:
+      - perplexity-network
+
+networks:
+  perplexity-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  copilot-logs:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/perplexity/copilot-logs

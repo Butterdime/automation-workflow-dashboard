@@ -1,0 +1,181 @@
+{
+  "compilationId": "e521306a-ad53-4ff7-9c6c-b6fea17a34f9",
+  "spaceName": "001-HUMAN-AI-FRAMEWORK",
+  "weeklyFolder": "weekly-20251018",
+  "startTime": "2025-10-18T10:02:28.133Z",
+  "endTime": "2025-10-18T10:02:28.146Z",
+  "durationMs": 13,
+  "summary": {
+    "totalFilesCompiled": 8,
+    "totalErrors": 0,
+    "spacesCovered": [
+      "001-HUMAN-AI-FRAMEWORK",
+      "general",
+      "research",
+      "work"
+    ],
+    "fileTypes": {
+      ".log": 4,
+      ".json": 4
+    }
+  },
+  "compiledFiles": [
+    {
+      "original": {
+        "name": "audit.log",
+        "path": "/Users/puvansivanasan/Perplexity/spaces/001-HUMAN-AI-FRAMEWORK/audit.log",
+        "size": 76,
+        "modified": "2025-10-18T10:02:28.139Z",
+        "space": "001-HUMAN-AI-FRAMEWORK"
+      },
+      "destination": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/logs/001-HUMAN-AI-FRAMEWORK_2025-10-18T10-02-28-140Z_audit.log",
+      "checksum": "cf34bc765c770d9f8cdf0992a3bdf4dcd74011b3327ee8b1dec008df805708a4",
+      "compiledAt": "2025-10-18T10:02:28.141Z"
+    },
+    {
+      "original": {
+        "name": "objectives.json",
+        "path": "/Users/puvansivanasan/Perplexity/spaces/001-HUMAN-AI-FRAMEWORK/objectives.json",
+        "size": 73,
+        "modified": "2025-10-18T10:02:28.139Z",
+        "space": "001-HUMAN-AI-FRAMEWORK"
+      },
+      "destination": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/objectives/001-HUMAN-AI-FRAMEWORK_2025-10-18T10-02-28-141Z_objectives.json",
+      "checksum": "51062a85c85de1e9bab82e066f2293dad923d0bb47775420a094c0ec6dd1d161",
+      "compiledAt": "2025-10-18T10:02:28.142Z"
+    },
+    {
+      "original": {
+        "name": "audit.log",
+        "path": "/Users/puvansivanasan/Perplexity/spaces/general/audit.log",
+        "size": 61,
+        "modified": "2025-10-18T10:02:28.138Z",
+        "space": "general"
+      },
+      "destination": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/logs/general_2025-10-18T10-02-28-142Z_audit.log",
+      "checksum": "2b6edfd6b41854d001c084b2c059b50695bf5f9de2b466ba63943e1f9bc4564f",
+      "compiledAt": "2025-10-18T10:02:28.142Z"
+    },
+    {
+      "original": {
+        "name": "objectives.json",
+        "path": "/Users/puvansivanasan/Perplexity/spaces/general/objectives.json",
+        "size": 58,
+        "modified": "2025-10-18T10:02:28.138Z",
+        "space": "general"
+      },
+      "destination": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/objectives/general_2025-10-18T10-02-28-142Z_objectives.json",
+      "checksum": "a8e26eae9654a289b47083443718d3cf9b581e4fc9f40750c56098cfc8099f0c",
+      "compiledAt": "2025-10-18T10:02:28.143Z"
+    },
+    {
+      "original": {
+        "name": "audit.log",
+        "path": "/Users/puvansivanasan/Perplexity/spaces/research/audit.log",
+        "size": 62,
+        "modified": "2025-10-18T10:02:28.139Z",
+        "space": "research"
+      },
+      "destination": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/logs/research_2025-10-18T10-02-28-143Z_audit.log",
+      "checksum": "0d8dad0ee3d7d1d5ff6302759560773c39e9ed0890484bf599ba917f967e1f3f",
+      "compiledAt": "2025-10-18T10:02:28.143Z"
+    },
+    {
+      "original": {
+        "name": "objectives.json",
+        "path": "/Users/puvansivanasan/Perplexity/spaces/research/objectives.json",
+        "size": 59,
+        "modified": "2025-10-18T10:02:28.139Z",
+        "space": "research"
+      },
+      "destination": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/objectives/research_2025-10-18T10-02-28-143Z_objectives.json",
+      "checksum": "83a352fddfbf9cfc16fe4947b2cc31cdd04176c9d18881b67bdc6f0215981f32",
+      "compiledAt": "2025-10-18T10:02:28.144Z"
+    },
+    {
+      "original": {
+        "name": "audit.log",
+        "path": "/Users/puvansivanasan/Perplexity/spaces/work/audit.log",
+        "size": 58,
+        "modified": "2025-10-18T10:02:28.138Z",
+        "space": "work"
+      },
+      "destination": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/logs/work_2025-10-18T10-02-28-144Z_audit.log",
+      "checksum": "547b5008baee1ca1211b4d5d46121815dd607f75233671601f36d3c2481b6243",
+      "compiledAt": "2025-10-18T10:02:28.144Z"
+    },
+    {
+      "original": {
+        "name": "objectives.json",
+        "path": "/Users/puvansivanasan/Perplexity/spaces/work/objectives.json",
+        "size": 55,
+        "modified": "2025-10-18T10:02:28.138Z",
+        "space": "work"
+      },
+      "destination": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/objectives/work_2025-10-18T10-02-28-144Z_objectives.json",
+      "checksum": "b38c1b259b87133295add5778b2a5e0cbb5fafc52ad60366c034b1485e162cd9",
+      "compiledAt": "2025-10-18T10:02:28.145Z"
+    }
+  ],
+  "errors": [],
+  "integrity": {
+    "validFiles": 8,
+    "totalFiles": 8,
+    "integrityRate": 100,
+    "results": [
+      {
+        "file": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/logs/001-HUMAN-AI-FRAMEWORK_2025-10-18T10-02-28-140Z_audit.log",
+        "originalChecksum": "cf34bc765c770d9f8cdf0992a3bdf4dcd74011b3327ee8b1dec008df805708a4",
+        "currentChecksum": "cf34bc765c770d9f8cdf0992a3bdf4dcd74011b3327ee8b1dec008df805708a4",
+        "isValid": true
+      },
+      {
+        "file": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/objectives/001-HUMAN-AI-FRAMEWORK_2025-10-18T10-02-28-141Z_objectives.json",
+        "originalChecksum": "51062a85c85de1e9bab82e066f2293dad923d0bb47775420a094c0ec6dd1d161",
+        "currentChecksum": "51062a85c85de1e9bab82e066f2293dad923d0bb47775420a094c0ec6dd1d161",
+        "isValid": true
+      },
+      {
+        "file": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/logs/general_2025-10-18T10-02-28-142Z_audit.log",
+        "originalChecksum": "2b6edfd6b41854d001c084b2c059b50695bf5f9de2b466ba63943e1f9bc4564f",
+        "currentChecksum": "2b6edfd6b41854d001c084b2c059b50695bf5f9de2b466ba63943e1f9bc4564f",
+        "isValid": true
+      },
+      {
+        "file": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/objectives/general_2025-10-18T10-02-28-142Z_objectives.json",
+        "originalChecksum": "a8e26eae9654a289b47083443718d3cf9b581e4fc9f40750c56098cfc8099f0c",
+        "currentChecksum": "a8e26eae9654a289b47083443718d3cf9b581e4fc9f40750c56098cfc8099f0c",
+        "isValid": true
+      },
+      {
+        "file": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/logs/research_2025-10-18T10-02-28-143Z_audit.log",
+        "originalChecksum": "0d8dad0ee3d7d1d5ff6302759560773c39e9ed0890484bf599ba917f967e1f3f",
+        "currentChecksum": "0d8dad0ee3d7d1d5ff6302759560773c39e9ed0890484bf599ba917f967e1f3f",
+        "isValid": true
+      },
+      {
+        "file": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/objectives/research_2025-10-18T10-02-28-143Z_objectives.json",
+        "originalChecksum": "83a352fddfbf9cfc16fe4947b2cc31cdd04176c9d18881b67bdc6f0215981f32",
+        "currentChecksum": "83a352fddfbf9cfc16fe4947b2cc31cdd04176c9d18881b67bdc6f0215981f32",
+        "isValid": true
+      },
+      {
+        "file": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/logs/work_2025-10-18T10-02-28-144Z_audit.log",
+        "originalChecksum": "547b5008baee1ca1211b4d5d46121815dd607f75233671601f36d3c2481b6243",
+        "currentChecksum": "547b5008baee1ca1211b4d5d46121815dd607f75233671601f36d3c2481b6243",
+        "isValid": true
+      },
+      {
+        "file": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/compiled-data/weekly-20251018/objectives/work_2025-10-18T10-02-28-144Z_objectives.json",
+        "originalChecksum": "b38c1b259b87133295add5778b2a5e0cbb5fafc52ad60366c034b1485e162cd9",
+        "currentChecksum": "b38c1b259b87133295add5778b2a5e0cbb5fafc52ad60366c034b1485e162cd9",
+        "isValid": true
+      }
+    ]
+  },
+  "security": {
+    "exclusiveAccess": true,
+    "dataSharing": "PROHIBITED",
+    "accessLevel": "HUMAN-AI-FRAMEWORK-ONLY"
+  }
+}

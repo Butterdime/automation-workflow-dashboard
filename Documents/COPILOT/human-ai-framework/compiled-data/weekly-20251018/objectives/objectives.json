@@ -1,0 +1,53 @@
+{
+  "spaceName": "001-HUMAN-AI-FRAMEWORK",
+  "compilationId": "e521306a-ad53-4ff7-9c6c-b6fea17a34f9",
+  "lastUpdated": "2025-10-18T10:02:28.145Z",
+  "sources": [
+    {
+      "space": "001-HUMAN-AI-FRAMEWORK",
+      "file": "objectives.json",
+      "checksum": "51062a85c85de1e9bab82e066f2293dad923d0bb47775420a094c0ec6dd1d161"
+    },
+    {
+      "space": "general",
+      "file": "objectives.json",
+      "checksum": "a8e26eae9654a289b47083443718d3cf9b581e4fc9f40750c56098cfc8099f0c"
+    },
+    {
+      "space": "research",
+      "file": "objectives.json",
+      "checksum": "83a352fddfbf9cfc16fe4947b2cc31cdd04176c9d18881b67bdc6f0215981f32"
+    },
+    {
+      "space": "work",
+      "file": "objectives.json",
+      "checksum": "b38c1b259b87133295add5778b2a5e0cbb5fafc52ad60366c034b1485e162cd9"
+    }
+  ],
+  "objectives": {
+    "001-HUMAN-AI-FRAMEWORK": {
+      "space": "001-HUMAN-AI-FRAMEWORK",
+      "objectives": [
+        "test"
+      ]
+    },
+    "general": {
+      "space": "general",
+      "objectives": [
+        "test"
+      ]
+    },
+    "research": {
+      "space": "research",
+      "objectives": [
+        "test"
+      ]
+    },
+    "work": {
+      "space": "work",
+      "objectives": [
+        "test"
+      ]
+    }
+  }
+}

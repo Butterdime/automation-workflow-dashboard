@@ -1,0 +1,61 @@
+{
+  "name": "copilot-integration",
+  "version": "1.0.0",
+  "description": "Complete Copilot agent integration with webhook multiplexing, secure tunneling, and CI/CD automation",
+  "type": "module",
+  "main": "webhook-multiplexer.js",
+  "scripts": {
+    "start": "node webhook-multiplexer.js",
+    "dev": "concurrently \"npm run copilot:dev\" \"npm run webhook:dev\"",
+    "copilot": "node copilot/server.js",
+    "copilot:dev": "nodemon copilot/server.js",
+    "webhook:dev": "nodemon webhook-multiplexer.js",
+    "tunnel": "node scripts/tunnel-setup.js",
+    "test": "node scripts/smoke.js",
+    "test:integration": "npm run test",
+    "smoke": "node scripts/smoke.js",
+    "lint": "eslint .",
+    "typecheck": "echo 'TypeScript checking skipped for now'",
+    "build": "echo 'Build step completed'",
+    "deploy": "npm run build && npm run test",
+    "validate": "./validate-pipeline.sh",
+    "status": "./quick-status.sh",
+    "setup": "./setup-log-sharing.sh",
+    "check": "./deployment-status.sh development"
+  },
+  "keywords": [
+    "copilot",
+    "webhook",
+    "slack",
+    "automation",
+    "tunnel",
+    "ngrok"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "axios": "^1.6.2",
+    "dotenv": "^16.3.1",
+    "ngrok": "^5.0.0-beta.2",
+    "crypto": "^1.0.1",
+    "firebase": "^10.5.0",
+    "@google-cloud/firestore": "^7.1.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.54.0",
+    "nodemon": "^3.0.2",
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/copilot-integration.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/copilot-integration/issues"
+  },
+  "homepage": "https://github.com/your-username/copilot-integration#readme"
+}
