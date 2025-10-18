@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Copilot Agent Service
   copilot-agent:
@@ -62,7 +60,7 @@ services:
   human-ai-framework-space:
     build:
       context: ./human-ai-framework
-      dockerfile: ../copilot/Dockerfile
+      dockerfile: Dockerfile
     container_name: human-ai-framework-space
     ports:
       - "4001:4000"
