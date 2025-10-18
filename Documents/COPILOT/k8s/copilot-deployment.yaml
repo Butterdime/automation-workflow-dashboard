@@ -170,6 +170,89 @@ spec:
   type: ClusterIP
 
 ---
+# HUMAN AI FRAMEWORK Space Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: human-ai-framework-space
+  namespace: perplexity-copilot
+  labels:
+    app: human-ai-framework-space
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: human-ai-framework-space
+  template:
+    metadata:
+      labels:
+        app: human-ai-framework-space
+    spec:
+      serviceAccountName: copilot-service-account
+      containers:
+      - name: human-ai-framework-space
+        image: human-ai-framework-space:latest
+        ports:
+        - containerPort: 4000
+          name: http
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: COPILOT_PORT
+          value: "4000"
+        - name: SPACE_NAME
+          value: "HUMAN-AI-FRAMEWORK"
+        - name: SHARED_COPILOT_LOGS
+          value: "/shared/copilot-logs"
+        - name: SHARED_PERPLEXITY_SPACES
+          value: "/shared/perplexity-spaces"
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: copilot-secrets
+              key: OPENAI_API_KEY
+        volumeMounts:
+        - name: copilot-logs
+          mountPath: /shared/copilot-logs
+          readOnly: true
+        - name: perplexity-spaces
+          mountPath: /shared/perplexity-spaces
+          readOnly: true
+        - name: framework-data
+          mountPath: /app/human-ai-framework
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 4000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 4000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: copilot-logs
+        hostPath:
+          path: /var/perplexity/copilot-logs
+          type: Directory
+      - name: perplexity-spaces
+        hostPath:
+          path: /home/puvansivanasan/Perplexity/spaces
+          type: Directory
+      - name: framework-data
+        persistentVolumeClaim:
+          claimName: human-ai-framework-pvc
+
+---
 # Webhook Multiplexer Deployment
 apiVersion: apps/v1
 kind: Deployment

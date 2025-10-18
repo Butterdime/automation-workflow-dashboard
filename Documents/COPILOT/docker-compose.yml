@@ -58,6 +58,45 @@ services:
       timeout: 10s
       retries: 3
 
+  # HUMAN AI FRAMEWORK Space Service
+  human-ai-framework-space:
+    build:
+      context: ./human-ai-framework
+      dockerfile: ../copilot/Dockerfile
+    container_name: human-ai-framework-space
+    ports:
+      - "4001:4000"
+    environment:
+      - COPILOT_URL=http://copilot-agent:4000
+      - WEBHOOK_URL=http://webhook-multiplexer:3000
+      - SHARED_COPILOT_LOGS=/shared/copilot-logs
+      - SHARED_PERPLEXITY_SPACES=/shared/perplexity-spaces
+      - SPACE_NAME=HUMAN-AI-FRAMEWORK
+      - NODE_ENV=production
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      # Read-only access to shared Copilot logs
+      - /var/perplexity/copilot-logs:/shared/copilot-logs:ro
+      # Read-only access to all Perplexity spaces
+      - ~/Perplexity/spaces:/shared/perplexity-spaces:ro
+      # Read-write access to HUMAN AI FRAMEWORK data
+      - ./human-ai-framework:/app/human-ai-framework
+      - ./logs:/app/logs
+      - ./config:/app/config:ro
+    depends_on:
+      copilot-agent:
+        condition: service_healthy
+      webhook-multiplexer:
+        condition: service_started
+    restart: unless-stopped
+    networks:
+      - perplexity-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   # Example Perplexity Space Service
   perplexity-space-example:
     build:

@@ -1,6 +1,6 @@
 {
   "week_id": "2025-W41",
-  "compilation_date": "2025-10-18T18:53:19.382580",
+  "compilation_date": "2025-10-18T18:53:27.845800",
   "framework_space": "HUMAN-AI-FRAMEWORK",
   "security_hash": "034043a8f8830738",
   "data_sources": {
@@ -15,188 +15,31 @@
       "files": []
     },
     "framework_configs": {
-      "files_count": 3,
-      "total_size": 1275,
-      "files": [
-        {
-          "original_path": "/Users/puvansivanasan/Documents/COPILOT/copilot/config.json",
-          "compiled_path": "framework_configs/config.json",
-          "size": 140,
-          "hash": "3078e42598a9d6f3"
-        },
-        {
-          "original_path": "/Users/puvansivanasan/Documents/COPILOT/config/copilot-schema.json",
-          "compiled_path": "framework_configs/copilot-schema.json",
-          "size": 700,
-          "hash": "65d60af94146024b"
-        },
-        {
-          "original_path": "/Users/puvansivanasan/Documents/COPILOT/human-ai-framework/last-compilation-status.json",
-          "compiled_path": "framework_configs/last-compilation-status.json",
-          "size": 435,
-          "hash": "dfe754645ba706c8"
-        }
-      ]
+      "files_count": 0,
+      "total_size": 0,
+      "files": []
     },
     "exclusive_content": {
-      "files_count": 26,
-      "total_size": 125923,
+      "files_count": 3,
+      "total_size": 34418,
       "files": [
-        {
-          "original_path": "human-ai-framework/weekly-compiler.js",
-          "compiled_path": "exclusive_content/weekly-compiler.js",
-          "size": 20599,
-          "hash": "d4ad0d1c06aa58ef"
-        },
-        {
-          "original_path": "human-ai-framework/weekly-compilation-scheduler.sh",
-          "compiled_path": "exclusive_content/weekly-compilation-scheduler.sh",
-          "size": 11992,
-          "hash": "f17053db936835b9"
-        },
-        {
-          "original_path": "human-ai-framework/scheduler.log",
-          "compiled_path": "exclusive_content/scheduler.log",
-          "size": 2971,
-          "hash": "0bc19457a9679bec"
-        },
         {
           "original_path": "human-ai-framework/compilations.db",
           "compiled_path": "exclusive_content/compilations.db",
           "size": 24576,
-          "hash": "f9e4d7b67ee7bd8e"
-        },
-        {
-          "original_path": "human-ai-framework/README.md",
-          "compiled_path": "exclusive_content/README.md",
-          "size": 9736,
-          "hash": "d91a980ef9c8c631"
-        },
-        {
-          "original_path": "human-ai-framework/last-compilation-status.json",
-          "compiled_path": "exclusive_content/last-compilation-status.json",
-          "size": 435,
-          "hash": "dfe754645ba706c8"
-        },
-        {
-          "original_path": "human-ai-framework/audit.log",
-          "compiled_path": "exclusive_content/audit.log",
-          "size": 7668,
-          "hash": "fb5b7d24fbe9648c"
-        },
-        {
-          "original_path": "human-ai-framework/validate-jsons.py",
-          "compiled_path": "exclusive_content/validate-jsons.py",
-          "size": 17373,
-          "hash": "b614ca81570bb246"
+          "hash": "7aa62c897eb08a29"
         },
         {
           "original_path": "human-ai-framework/week-2025-W41/manifest.json",
           "compiled_path": "exclusive_content/manifest.json",
-          "size": 8797,
-          "hash": "13d7389428e7bc0b"
+          "size": 9251,
+          "hash": "8a0d5b3693b1a549"
         },
         {
           "original_path": "human-ai-framework/week-2025-W41/audit-20251018.json",
           "compiled_path": "exclusive_content/audit-20251018.json",
           "size": 591,
-          "hash": "add7b3074488070d"
-        },
-        {
-          "original_path": "human-ai-framework/week-2025-W41/objectives_sync/objectives.json",
-          "compiled_path": "exclusive_content/objectives.json",
-          "size": 114,
-          "hash": "5067a875ecf2bfbb"
-        },
-        {
-          "original_path": "human-ai-framework/week-2025-W41/framework_configs/config.json",
-          "compiled_path": "exclusive_content/config.json",
-          "size": 140,
-          "hash": "3078e42598a9d6f3"
-        },
-        {
-          "original_path": "human-ai-framework/week-2025-W41/framework_configs/last-compilation-status.json",
-          "compiled_path": "exclusive_content/last-compilation-status.json",
-          "size": 435,
-          "hash": "dfe754645ba706c8"
-        },
-        {
-          "original_path": "human-ai-framework/week-2025-W41/framework_configs/copilot-schema.json",
-          "compiled_path": "exclusive_content/copilot-schema.json",
-          "size": 700,
-          "hash": "65d60af94146024b"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/report-001-HUMAN-AI-FRAMEWORK-backup.json",
-          "compiled_path": "exclusive_content/report-001-HUMAN-AI-FRAMEWORK-backup.json",
-          "size": 8412,
-          "hash": "fd8995c1c923012f"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/report-001-HUMAN-AI-FRAMEWORK.json",
-          "compiled_path": "exclusive_content/report-001-HUMAN-AI-FRAMEWORK.json",
-          "size": 8412,
-          "hash": "fd8995c1c923012f"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/objectives/work_2025-10-18T10-02-28-144Z_objectives.json",
-          "compiled_path": "exclusive_content/work_2025-10-18T10-02-28-144Z_objectives.json",
-          "size": 55,
-          "hash": "b38c1b259b871332"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/objectives/research_2025-10-18T10-02-28-143Z_objectives.json",
-          "compiled_path": "exclusive_content/research_2025-10-18T10-02-28-143Z_objectives.json",
-          "size": 59,
-          "hash": "83a352fddfbf9cfc"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/objectives/objectives-001-HUMAN-AI-FRAMEWORK.json",
-          "compiled_path": "exclusive_content/objectives-001-HUMAN-AI-FRAMEWORK.json",
-          "size": 1235,
-          "hash": "e0f16d6257d7a21f"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/objectives/general_2025-10-18T10-02-28-142Z_objectives.json",
-          "compiled_path": "exclusive_content/general_2025-10-18T10-02-28-142Z_objectives.json",
-          "size": 58,
-          "hash": "a8e26eae9654a289"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/objectives/objectives.json",
-          "compiled_path": "exclusive_content/objectives.json",
-          "size": 1235,
-          "hash": "e0f16d6257d7a21f"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/objectives/001-HUMAN-AI-FRAMEWORK_2025-10-18T10-02-28-141Z_objectives.json",
-          "compiled_path": "exclusive_content/001-HUMAN-AI-FRAMEWORK_2025-10-18T10-02-28-141Z_objectives.json",
-          "size": 73,
-          "hash": "51062a85c85de1e9"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/logs/research_2025-10-18T10-02-28-143Z_audit.log",
-          "compiled_path": "exclusive_content/research_2025-10-18T10-02-28-143Z_audit.log",
-          "size": 62,
-          "hash": "0d8dad0ee3d7d1d5"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/logs/001-HUMAN-AI-FRAMEWORK_2025-10-18T10-02-28-140Z_audit.log",
-          "compiled_path": "exclusive_content/001-HUMAN-AI-FRAMEWORK_2025-10-18T10-02-28-140Z_audit.log",
-          "size": 76,
-          "hash": "cf34bc765c770d9f"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/logs/general_2025-10-18T10-02-28-142Z_audit.log",
-          "compiled_path": "exclusive_content/general_2025-10-18T10-02-28-142Z_audit.log",
-          "size": 61,
-          "hash": "2b6edfd6b41854d0"
-        },
-        {
-          "original_path": "human-ai-framework/compiled-data/weekly-20251018/logs/work_2025-10-18T10-02-28-144Z_audit.log",
-          "compiled_path": "exclusive_content/work_2025-10-18T10-02-28-144Z_audit.log",
-          "size": 58,
-          "hash": "547b5008baee1ca1"
+          "hash": "757c9c3ef9c6350c"
         }
       ]
     },

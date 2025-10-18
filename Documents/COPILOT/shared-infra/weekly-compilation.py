@@ -236,10 +236,19 @@ class WeeklyCompiler:
     
     def _collect_copilot_logs(self) -> Dict[str, Any]:
         """Collect Copilot logs for HUMAN AI FRAMEWORK only"""
-        logs_dir = Path.cwd() / "logs"
+        # Check for mounted shared logs first, fall back to local logs
+        shared_logs_dir = Path("/shared/copilot-logs")
+        local_logs_dir = Path.cwd() / "logs"
+        
+        logs_dir = shared_logs_dir if shared_logs_dir.exists() else local_logs_dir
         
         if not logs_dir.exists():
-            return {'files': [], 'total_size': 0, 'note': 'logs_directory_not_found'}
+            return {
+                'files': [], 
+                'total_size': 0, 
+                'note': 'logs_directory_not_found',
+                'searched_paths': [str(shared_logs_dir), str(local_logs_dir)]
+            }
         
         # Get logs from the past week
         week_ago = self.compilation_date - timedelta(days=7)
@@ -247,30 +256,38 @@ class WeeklyCompiler:
         total_size = 0
         skipped_count = 0
         
-        for log_file in logs_dir.glob("*.log"):
-            stat_info = log_file.stat()
-            modified_time = datetime.fromtimestamp(stat_info.st_mtime)
-            
-            if modified_time >= week_ago:
-                # Validate log content is FRAMEWORK-specific
-                if self._validate_log_framework_content(log_file):
-                    # Check for duplicates using checksum
-                    if self._should_process_file(log_file):
-                        log_files.append({
-                            'path': str(log_file),
-                            'size': stat_info.st_size,
-                            'modified': modified_time.isoformat(),
-                            'hash': self._calculate_file_hash(log_file),
-                            'status': 'new_or_changed'
-                        })
-                        total_size += stat_info.st_size
-                    else:
-                        skipped_count += 1
+        # Search multiple log patterns for comprehensive collection
+        log_patterns = ["*.log", "copilot*.log", "*.txt", "access.log*", "error.log*"]
+        
+        for pattern in log_patterns:
+            for log_file in logs_dir.glob(pattern):
+                if log_file.is_file():
+                    stat_info = log_file.stat()
+                    modified_time = datetime.fromtimestamp(stat_info.st_mtime)
+                    
+                    if modified_time >= week_ago:
+                        # Validate log content is FRAMEWORK-specific
+                        if self._validate_log_framework_content(log_file):
+                            # Check for duplicates using checksum
+                            if self._should_process_file(log_file):
+                                log_files.append({
+                                    'path': str(log_file),
+                                    'size': stat_info.st_size,
+                                    'modified': modified_time.isoformat(),
+                                    'hash': self._calculate_file_hash(log_file),
+                                    'status': 'new_or_changed',
+                                    'source': 'shared' if logs_dir == shared_logs_dir else 'local'
+                                })
+                                total_size += stat_info.st_size
+                            else:
+                                skipped_count += 1
         
         return {
             'files': log_files,
             'total_size': total_size,
             'files_skipped': skipped_count,
+            'log_source': str(logs_dir),
+            'patterns_searched': log_patterns,
             'collection_date': self.compilation_date.isoformat(),
             'week_range': f"{week_ago.isoformat()} to {self.compilation_date.isoformat()}"
         }
@@ -404,8 +421,11 @@ class WeeklyCompiler:
     def _synchronize_objectives(self) -> Dict[str, Any]:
         """Synchronize objectives from all Perplexity spaces with spaceName injection"""
         
-        # Base directory for Perplexity spaces
-        spaces_base = Path.home() / "Perplexity" / "spaces"
+        # Check for mounted shared spaces first, fall back to local path
+        shared_spaces_base = Path("/shared/perplexity-spaces")
+        local_spaces_base = Path.home() / "Perplexity" / "spaces"
+        
+        spaces_base = shared_spaces_base if shared_spaces_base.exists() else local_spaces_base
         objectives_data = {}
         synchronized_files = []
         
@@ -414,6 +434,7 @@ class WeeklyCompiler:
                 'objectives': objectives_data,
                 'files': synchronized_files,
                 'note': 'Perplexity spaces directory not found',
+                'searched_paths': [str(shared_spaces_base), str(local_spaces_base)],
                 'collection_date': self.compilation_date.isoformat()
             }
         
