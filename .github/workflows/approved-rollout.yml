@@ -143,6 +143,8 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
           working-directory: './dashboard'
+          github-comment: false
+          github-deployment: false
 
       - name: Report deployment status
         run: |
