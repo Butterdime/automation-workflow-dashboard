@@ -1,11 +1,12 @@
 {
   "version": 2,
+  "outputDirectory": "dashboard/dist",
   "builds": [
     { "src": "api/server.js", "use": "@vercel/node" },
-    { "src": "dashboard/approval-dashboard.html", "use": "@vercel/static" }
+    { "src": "dashboard/dist/index.html", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/server.js" },
-    { "src": "/(.*)", "dest": "/dashboard/approval-dashboard.html" }
+    { "src": "/(.*)", "dest": "/dashboard/dist/index.html" }
   ]
 }
