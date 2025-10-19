@@ -178,7 +178,7 @@ jobs:
           
           # Test 1: Check if dashboard loads and contains expected content
           content=$(curl -s "$DASHBOARD_URL")
-          if echo "$content" | grep -q "Approval CI Dashboard"; then
+          if echo "$content" | grep -q "Approval-Driven CI/CD Dashboard"; then
             echo "✅ Dashboard content validation passed"
           else
             echo "❌ Dashboard content validation failed"
