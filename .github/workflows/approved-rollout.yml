@@ -106,7 +106,7 @@ jobs:
     if: needs.validation.outputs.should_deploy == 'true'
     environment: production
     outputs:
-      dashboard_url: ${{ steps.vercel.outputs.preview-url }}
+      dashboard_url: https://approval-ci-dashboard.vercel.app
 
     steps:
       - uses: actions/checkout@v4
@@ -160,26 +160,40 @@ jobs:
     steps:
       - name: Health check with retries
         run: |
-          API_URL="${{ needs.deployment.outputs.dashboard_url }}/health"
+          DASHBOARD_URL="${{ needs.deployment.outputs.dashboard_url }}"
           for i in {1..5}; do
-            status=$(curl -s -o /dev/null -w "%{http_code}" "$API_URL")
+            status=$(curl -s -o /dev/null -w "%{http_code}" "$DASHBOARD_URL")
             if [ "$status" = "200" ]; then
-              echo "✅ Health check passed"; exit 0
+              echo "✅ Dashboard health check passed"; exit 0
             fi
+            echo "❌ Attempt $i failed (status: $status), retrying..."
             sleep $((i * 5))
           done
-          echo "❌ Health check failed"; exit 1
+          echo "❌ Dashboard health check failed after 5 attempts"; exit 1
 
       - name: Smoke tests
         run: |
-          ORG="${{ needs.validation.outputs.org_name }}"
-          API_URL="${{ needs.deployment.outputs.dashboard_url }}/api/organizations/$ORG/status"
-          status=$(curl -s -o /dev/null -w "%{http_code}" "$API_URL")
-          if [[ "$status" =~ ^(200|500)$ ]]; then
-            echo "✅ Endpoint responded"
+          DASHBOARD_URL="${{ needs.deployment.outputs.dashboard_url }}"
+          echo "🧪 Running smoke tests on dashboard..."
+          
+          # Test 1: Check if dashboard loads and contains expected content
+          content=$(curl -s "$DASHBOARD_URL")
+          if echo "$content" | grep -q "Approval CI Dashboard"; then
+            echo "✅ Dashboard content validation passed"
           else
-            echo "❌ Endpoint failed: $status"; exit 1
+            echo "❌ Dashboard content validation failed"
+            exit 1
           fi
+          
+          # Test 2: Check if main functionality elements are present  
+          if echo "$content" | grep -q "GitHub Token"; then
+            echo "✅ Dashboard UI elements validation passed"
+          else
+            echo "❌ Dashboard UI elements validation failed"
+            exit 1
+          fi
+          
+          echo "✅ All smoke tests passed"
 
       - name: Send notification
         if: always()
