@@ -4,9 +4,9 @@
   "description": "Frontend dashboard for approval-driven CI/CD system",
   "main": "index.html",
   "scripts": {
-    "dev": "live-server --port=3001 --open=approval-dashboard.html",
+    "dev": "serve --listen 3001 --single approval-dashboard.html",
     "build": "npm run minify",
-    "minify": "html-minifier --collapse-whitespace --remove-comments --minify-css --minify-js -o dist/index.html approval-dashboard.html",
+    "minify": "mkdir -p dist && cp approval-dashboard.html dist/index.html",
     "format": "prettier --write .",
     "validate": "html-validate *.html"
   },
@@ -21,12 +21,10 @@
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
-    "live-server": "^1.2.2",
-    "html-minifier": "^4.0.0",
+    "html-validate": "^8.7.4",
     "prettier": "^3.1.0",
-    "html-validate": "^8.7.4"
+    "serve": "^14.2.5"
   },
-  "dependencies": {},
   "engines": {
     "node": ">=18.0.0"
   }
