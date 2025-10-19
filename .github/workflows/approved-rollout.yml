@@ -186,7 +186,7 @@ jobs:
           fi
           
           # Test 2: Check if main functionality elements are present  
-          if echo "$content" | grep -q "GitHub Token"; then
+          if echo "$content" | grep -q "approve-button"; then
             echo "✅ Dashboard UI elements validation passed"
           else
             echo "❌ Dashboard UI elements validation failed"
