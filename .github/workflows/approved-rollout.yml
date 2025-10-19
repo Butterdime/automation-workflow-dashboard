@@ -51,7 +51,7 @@ jobs:
           APPROVED_BY="${{ github.event.client_payload.approved_by  || github.actor }}"
           TIMESTAMP="${{ github.event.client_payload.timestamp    || github.event.head_commit.timestamp }}"
 
-          ALLOWED_ORGS="your-org-1,your-org-2,your-org-3"
+          ALLOWED_ORGS="your-org,your-org-1,your-org-2,your-org-3"
           if [[ ",$ALLOWED_ORGS," =~ ",$ORG_NAME," ]]; then
             echo "should_deploy=true" >> $GITHUB_OUTPUT
             echo "org_name=$ORG_NAME"          >> $GITHUB_OUTPUT
