@@ -1,18 +1,22 @@
 {
-  "name": "vercel",
+  "name": "approval-ci-dashboard",
   "version": "1.0.0",
-  "description": "",
-  "type": "module",
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "next start"
   },
   "dependencies": {
-    "next": "15.5.5",
-    "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "next": "^13.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "eslint": "8.20.0",
+    "supertest": "7.1.3",
+    "rimraf": "4.0.0"
   }
 }
-
