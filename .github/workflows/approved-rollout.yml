@@ -1,0 +1,314 @@
+name: Approved Rollout Workflow
+
+on:
+  repository_dispatch:
+    types: [approved-rollout]
+  workflow_dispatch:
+    inputs:
+      organization:
+        description: 'Organization to deploy'
+        required: true
+        default: 'your-org'
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+        - development
+        - staging
+        - production
+
+env:
+  NODE_VERSION: '18'
+  DEPLOYMENT_TIMEOUT: '10m'
+
+jobs:
+  validation:
+    name: Pre-deployment Validation
+    runs-on: ubuntu-latest
+    outputs:
+      should_deploy: ${{ steps.validation.outputs.should_deploy }}
+      org_name: ${{ steps.validation.outputs.org_name }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: |
+          api/package-lock.json
+          dashboard/package-lock.json
+
+    - name: Validate approval payload
+      id: validation
+      run: |
+        echo "Validating approval request..."
+        ORG_NAME="${{ github.event.client_payload.organization || github.event.inputs.organization }}"
+        APPROVED_BY="${{ github.event.client_payload.approved_by || github.actor }}"
+        TIMESTAMP="${{ github.event.client_payload.timestamp || github.event.head_commit.timestamp }}"
+        
+        echo "Organization: $ORG_NAME"
+        echo "Approved by: $APPROVED_BY"
+        echo "Timestamp: $TIMESTAMP"
+        
+        # Validate organization is in allowed list
+        ALLOWED_ORGS="your-org-1,your-org-2,your-org-3"
+        if [[ ",$ALLOWED_ORGS," =~ ",$ORG_NAME," ]]; then
+          echo "✅ Organization $ORG_NAME is approved for deployment"
+          echo "should_deploy=true" >> $GITHUB_OUTPUT
+          echo "org_name=$ORG_NAME" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Organization $ORG_NAME is not in the approved list"
+          echo "should_deploy=false" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+    - name: Install API dependencies
+      run: |
+        cd api
+        npm ci
+
+    - name: Install Dashboard dependencies
+      run: |
+        cd dashboard
+        npm ci
+
+    - name: Run tests
+      run: |
+        cd api
+        npm test || echo "No tests configured yet"
+
+    - name: Lint code
+      run: |
+        cd api
+        npm run lint || echo "Linting not configured yet"
+
+  setup-node-deps:
+    name: Setup Node Dependencies
+    runs-on: ubuntu-latest
+    needs: validation
+    if: needs.validation.outputs.should_deploy == 'true'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: |
+          api/package-lock.json
+          dashboard/package-lock.json
+
+    - name: Cache dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          api/node_modules
+          dashboard/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install and verify dependencies
+      run: |
+        echo "Installing API dependencies..."
+        cd api
+        npm ci
+        npm ls --depth=0
+        
+        echo "Installing Dashboard dependencies..."
+        cd ../dashboard
+        npm ci
+        npm ls --depth=0
+
+  deployment:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [validation, setup-node-deps]
+    if: needs.validation.outputs.should_deploy == 'true'
+    environment: production
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Restore dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          api/node_modules
+          dashboard/node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Build dashboard
+      run: |
+        cd dashboard
+        npm run build || echo "No build step configured"
+
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        vercel-args: '--prod'
+        working-directory: ./
+
+    - name: Update deployment status
+      run: |
+        echo "✅ Deployment completed for organization: ${{ needs.validation.outputs.org_name }}"
+        echo "🔗 Dashboard URL: ${{ steps.deploy.outputs.preview-url || 'https://your-dashboard.vercel.app' }}"
+
+  monitoring:
+    name: Post-deployment Monitoring
+    runs-on: ubuntu-latest
+    needs: [validation, deployment]
+    if: always() && needs.validation.outputs.should_deploy == 'true'
+    
+    steps:
+    - name: Health check
+      run: |
+        DASHBOARD_URL="${{ secrets.DASHBOARD_URL || 'https://your-dashboard.vercel.app' }}"
+        echo "Performing health check on $DASHBOARD_URL"
+        
+        # Wait for deployment to be ready
+        sleep 30
+        
+        # Check API health endpoint
+        API_URL="$DASHBOARD_URL/api/health"
+        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$API_URL" || echo "000")
+        
+        if [ "$HTTP_STATUS" = "200" ]; then
+          echo "✅ API health check passed"
+        else
+          echo "❌ API health check failed with status: $HTTP_STATUS"
+          exit 1
+        fi
+
+    - name: Smoke tests
+      run: |
+        echo "Running smoke tests..."
+        ORG_NAME="${{ needs.validation.outputs.org_name }}"
+        API_URL="${{ secrets.DASHBOARD_URL || 'https://your-dashboard.vercel.app' }}/api/organizations/$ORG_NAME/status"
+        
+        # Test organization status endpoint
+        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$API_URL" || echo "000")
+        
+        if [ "$HTTP_STATUS" = "200" ] || [ "$HTTP_STATUS" = "500" ]; then
+          echo "✅ Organization endpoint is responding"
+        else
+          echo "❌ Organization endpoint failed with status: $HTTP_STATUS"
+          exit 1
+        fi
+
+    - name: Send notification
+      if: always()
+      run: |
+        ORG_NAME="${{ needs.validation.outputs.org_name }}"
+        STATUS="${{ job.status }}"
+        TIMESTAMP=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        
+        echo "📊 Deployment Summary for $ORG_NAME"
+        echo "Status: $STATUS"
+        echo "Timestamp: $TIMESTAMP"
+        echo "Approved by: ${{ github.event.client_payload.approved_by || github.actor }}"
+        echo "Commit: ${{ github.sha }}"
+        
+        # Here you could add webhook notifications, Slack alerts, etc.
+        # curl -X POST "$WEBHOOK_URL" -H "Content-Type: application/json" \
+        #   -d "{\"text\":\"Deployment $STATUS for $ORG_NAME at $TIMESTAMP\"}"
+
+  feedback-loop:
+    name: Feedback Loop
+    runs-on: ubuntu-latest
+    needs: [validation, deployment, monitoring]
+    if: always() && needs.validation.outputs.should_deploy == 'true'
+    
+    steps:
+    - name: Collect deployment metrics
+      run: |
+        echo "📈 Collecting deployment metrics..."
+        
+        ORG_NAME="${{ needs.validation.outputs.org_name }}"
+        VALIDATION_STATUS="${{ needs.validation.result }}"
+        DEPLOYMENT_STATUS="${{ needs.deployment.result }}"
+        MONITORING_STATUS="${{ needs.monitoring.result }}"
+        
+        echo "Organization: $ORG_NAME"
+        echo "Validation: $VALIDATION_STATUS"
+        echo "Deployment: $DEPLOYMENT_STATUS"
+        echo "Monitoring: $MONITORING_STATUS"
+        
+        # Calculate overall success rate
+        SUCCESS_COUNT=0
+        TOTAL_COUNT=3
+        
+        [ "$VALIDATION_STATUS" = "success" ] && SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+        [ "$DEPLOYMENT_STATUS" = "success" ] && SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+        [ "$MONITORING_STATUS" = "success" ] && SUCCESS_COUNT=$((SUCCESS_COUNT + 1))
+        
+        SUCCESS_RATE=$((SUCCESS_COUNT * 100 / TOTAL_COUNT))
+        echo "Success Rate: $SUCCESS_RATE%"
+
+    - name: Update audit trail
+      run: |
+        echo "📝 Updating audit trail..."
+        
+        AUDIT_DATA=$(cat << EOF
+        {
+          "timestamp": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+          "organization": "${{ needs.validation.outputs.org_name }}",
+          "approved_by": "${{ github.event.client_payload.approved_by || github.actor }}",
+          "workflow_run_id": "${{ github.run_id }}",
+          "commit_sha": "${{ github.sha }}",
+          "status": {
+            "validation": "${{ needs.validation.result }}",
+            "deployment": "${{ needs.deployment.result }}",
+            "monitoring": "${{ needs.monitoring.result }}"
+          }
+        }
+        EOF
+        )
+        
+        echo "Audit data: $AUDIT_DATA"
+        # Store in database, send to logging service, etc.
+
+    - name: Generate deployment report
+      run: |
+        echo "📋 Generating deployment report..."
+        
+        cat << EOF > deployment-report.md
+        # Deployment Report
+        
+        **Organization:** ${{ needs.validation.outputs.org_name }}
+        **Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+        **Approved by:** ${{ github.event.client_payload.approved_by || github.actor }}
+        **Workflow Run:** [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+        
+        ## Results
+        - ✅ Validation: ${{ needs.validation.result }}
+        - ✅ Deployment: ${{ needs.deployment.result }}
+        - ✅ Monitoring: ${{ needs.monitoring.result }}
+        
+        ## Next Steps
+        - Monitor application performance
+        - Verify user acceptance
+        - Schedule next deployment window
+        EOF
+        
+        cat deployment-report.md

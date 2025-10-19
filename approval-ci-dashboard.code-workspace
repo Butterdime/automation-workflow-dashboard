@@ -1,0 +1,66 @@
+{
+  "folders": [
+    { 
+      "name": "Root",
+      "path": "." 
+    },
+    { 
+      "name": "API",
+      "path": "api" 
+    },
+    { 
+      "name": "Dashboard",
+      "path": "dashboard" 
+    },
+    { 
+      "name": "GitHub Workflows",
+      "path": ".github/workflows" 
+    },
+    { 
+      "name": "Scripts",
+      "path": "scripts" 
+    },
+    { 
+      "name": "Config",
+      "path": "config" 
+    },
+    { 
+      "name": "COPILOT System",
+      "path": "Documents/COPILOT" 
+    }
+  ],
+  "settings": {
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    "github.copilot.inlineSuggest.enable": true,
+    "github.copilot.acceptSuggestionOnEnter": "on",
+    "github.copilot.showWelcome": false,
+    "github.copilot.showConfirmationDialog": false,
+    "github.copilot.nextEditSuggestions.enabled": true,
+    "editor.inlineSuggest.enabled": true,
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": true,
+      "strings": true
+    },
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "git.enableSmartCommit": true,
+    "git.confirmSync": false,
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.git": false,
+      "**/.DS_Store": true,
+      "**/scripts/*.log": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "GitHub.copilot",
+      "GitHub.copilot-chat",
+      "Gruntfuggly.todo-tree",
+      "ms-vscode.vscode-json",
+      "redhat.vscode-yaml",
+      "ms-vscode.github-actions"
+    ]
+  }
+}
