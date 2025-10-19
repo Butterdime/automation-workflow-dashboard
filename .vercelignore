@@ -1,0 +1,14 @@
+# Ignore COPILOT system files and other nested projects
+Documents/
+config/
+scripts/
+*.md
+.git/
+.github/workflows/deploy.yml
+.github/workflows/pages.yml
+
+# Keep only the essential files for deployment:
+# - api/ (Express server)
+# - dashboard/ (Static HTML)  
+# - .github/workflows/approved-rollout.yml (Main workflow)
+# - vercel.json (Deployment config)
