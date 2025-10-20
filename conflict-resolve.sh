@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
-# conflict-resolve.sh
+set -euo pipefail
+
+# conflict-resolve.sh – Automated fix applied by copilot-master.sh
 # 1. Accept a single argument: path to conflicted file (relative to $HOME).
 # 2. Verify the file exists; exit with error if not.
 # 3. Reveal the file in Finder (open -R).
@@ -16,9 +18,10 @@ fi
 
 FILE="$HOME/$1"
 
+# Confirm the file exists
 if [ ! -f "$FILE" ]; then
   echo "Error: File '$FILE' does not exist."
-  exit 2
+  exit 1
 fi
 
 open -R "$FILE"

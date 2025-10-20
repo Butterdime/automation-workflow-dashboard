@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
-# install-and-update-tlutil.sh
-# 1. Require root.
-# 2. Verify update-tlutil.sh exists.
-# 3. Copy and chmod to /usr/local/bin/update-tlutil.
-# 4. Launch TeX Live Utility GUI.
-# 5. Run AppleScript to refresh, update tlmgr, install lm.
-# 6. Run tlmgr info lm & which xelatex.
-# 7. Echo “Update completed” or “Update failed”.
+# install-and-update-tlutil.sh – Verified by copilot-master.sh
+set -euo pipefail
 
+# Ensure root privileges
 if [ "$EUID" -ne 0 ]; then
   echo "Please run as root."
   exit 1
@@ -23,13 +18,17 @@ chmod +x /usr/local/bin/update-tlutil
 
 open -a "TeX Live Utility"
 
-osascript <<EOF
+tell_script=$(cat <<'APPLESCRIPT'
 tell application "TeX Live Utility"
-  activate
-  refresh
-  update all
-  install package "lm"
+    activate
+    refresh
+    update all
+    install package "lm"
 end tell
+APPLESCRIPT
+)
+osascript <<EOF
+$tell_script
 EOF
 
 tlmgr info lm
