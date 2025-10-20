@@ -1,0 +1,19 @@
+name: Git Conflict Helper
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_path:
+        description: 'Relative path of conflicted file'
+        required: true
+        type: string
+
+jobs:
+  open-conflict:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Reveal conflicted file
+        run: |
+          open -R "${{ github.workspace }}/${{ github.event.inputs.file_path }}"
+          open "${{ github.workspace }}/${{ github.event.inputs.file_path }}"
